@@ -2,7 +2,10 @@
 # AIRLINE PASSENGER SATISFACTION
 
 import pandas as pd
+from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder
 
 # Load the Data
 
@@ -47,3 +50,21 @@ categorical_feature_names = training_feature_matrix_X.select_dtypes(exclude=["nu
 
 print("Numeric Features:", numeric_feature_names)
 print("Categorical Features:", categorical_feature_names)
+
+# Preprocessing Pipeline
+
+numeric_preprocessing_pipeline = Pipeline(steps=[
+    ("imputer", SimpleImputer(strategy="median"))
+])
+
+categorical_preprocessing_pipeline = Pipeline(steps=[
+    ("imputer", SimpleImputer(strategy="most_frequent")),
+    ("onehot", OneHotEncoder(handle_unknown="ignore"))
+])
+
+full_preprocessor = ColumnTransformer(
+    transformers=[
+        ("num", numeric_preprocessing_pipeline, numeric_feature_names),
+        ("cat", categorical_preprocessing_pipeline, categorical_feature_names)
+    ]
+)
