@@ -2,11 +2,15 @@
 # AIRLINE PASSENGER SATISFACTION
 
 import pandas as pd
+
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
+
 
 # Load the Data
 
@@ -76,3 +80,29 @@ random_forest_pipeline = Pipeline(steps=[
     ("preprocess", full_preprocessor),
     ("model", RandomForestClassifier(random_state=42))
 ])
+
+# Hyperparameter Tuning
+
+random_forest_parameter_grid = {
+    "model__n_estimators": [100, 200],
+    "model__max_depth": [10, 20, None],
+    "model__min_samples_split": [2, 5]
+}
+
+random_forest_grid_search = GridSearchCV(
+    estimator=random_forest_pipeline,
+    param_grid=random_forest_parameter_grid,
+    scoring="f1",
+    cv=5,
+    n_jobs=-1,
+    refit=True
+)
+
+
+print("\nTraining Random Forest Model...")
+random_forest_grid_search.fit(training_feature_matrix_X, training_target_vector_y)
+
+best_random_forest_model = random_forest_grid_search.best_estimator_
+
+print("\nBest Parameters:")
+print(random_forest_grid_search.best_params_)
