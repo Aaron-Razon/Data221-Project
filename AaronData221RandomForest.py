@@ -165,3 +165,23 @@ with PdfPages("random_forest_confusion_matrix.pdf") as pdf:
     pdf.savefig(figure_object)
     plt.show()
     plt.close(figure_object)
+
+# Save Results To A CSV File
+
+random_forest_results_dataframe = pd.DataFrame([
+    {
+        "Model": "Random Forest",
+        "Best Parameters": str(random_forest_grid_search.best_params_),
+        "Accuracy": random_forest_accuracy,
+        "Precision": random_forest_precision,
+        "Recall": random_forest_recall,
+        "F1-score": random_forest_f1_score,
+        "ROC-AUC": random_forest_roc_auc
+    }
+])
+
+random_forest_results_dataframe.to_csv("random_forest_results.csv", index=False)
+
+print("\nSaved Files:")
+print("- random_forest_confusion_matrix.pdf")
+print("- random_forest_results.csv")
