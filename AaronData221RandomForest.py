@@ -3,6 +3,7 @@
 
 import pandas as pd
 from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
@@ -68,3 +69,10 @@ full_preprocessor = ColumnTransformer(
         ("cat", categorical_preprocessing_pipeline, categorical_feature_names)
     ]
 )
+
+# Build The Random Forest Pipeline
+
+random_forest_pipeline = Pipeline(steps=[
+    ("preprocess", full_preprocessor),
+    ("model", RandomForestClassifier(random_state=42))
+])
