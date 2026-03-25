@@ -30,3 +30,11 @@ target_label_mapping = {
 
 training_dataframe[target_column_name] = training_dataframe[target_column_name].map(target_label_mapping)
 testing_dataframe[target_column_name] = testing_dataframe[target_column_name].map(target_label_mapping)
+
+# Split Features and Target
+
+training_feature_matrix_X = training_dataframe.drop(columns=[target_column_name])
+training_target_vector_y = training_dataframe[target_column_name]
+
+testing_feature_matrix_X = testing_dataframe.drop(columns=[target_column_name])
+testing_target_vector_y = testing_dataframe[target_column_name]
