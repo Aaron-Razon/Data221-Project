@@ -46,3 +46,34 @@ y_train = train_df["satisfaction"]
 
 X_test = test_df.drop(columns="satisfaction")
 y_test = test_df["satisfaction"]
+
+# ============================================
+# 3. IDENTIFY FEATURE TYPES
+# ============================================
+
+numeric_cols = X_train.select_dtypes(include=["number"]).columns.tolist()
+categorical_cols = X_train.select_dtypes(exclude=["number"]).columns.tolist()
+
+print("Numeric features:    ", numeric_cols)
+print("Categorical features:", categorical_cols)
+
+# ============================================
+# 4. PREPROCESSING
+# Decision Trees don't need scaling, just
+# imputation (filling missing values) and
+# one-hot encoding for categorical columns.
+# ============================================
+
+numeric_pipeline = Pipeline(steps=[
+    ("imputer", SimpleImputer(strategy="median"))  # fill missing numbers with the median
+])
+
+categorical_pipeline = Pipeline(steps=[
+    ("imputer", SimpleImputer(strategy="most_frequent")),  # fill missing text with most common value
+    ("onehot", OneHotEncoder(handle_unknown="ignore"))  # convert categories to 0/1 columns
+])
+
+preprocessor = ColumnTransformer(transformers=[
+    ("num", numeric_pipeline, numeric_cols),
+    ("cat", categorical_pipeline, categorical_cols)
+])
