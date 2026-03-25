@@ -10,6 +10,16 @@ from sklearn.preprocessing import OneHotEncoder
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    roc_auc_score,
+    classification_report,
+    confusion_matrix,
+    ConfusionMatrixDisplay
+)
 
 
 # Load the Data
@@ -98,7 +108,6 @@ random_forest_grid_search = GridSearchCV(
     refit=True
 )
 
-
 print("\nTraining Random Forest Model...")
 random_forest_grid_search.fit(training_feature_matrix_X, training_target_vector_y)
 
@@ -106,3 +115,8 @@ best_random_forest_model = random_forest_grid_search.best_estimator_
 
 print("\nBest Parameters:")
 print(random_forest_grid_search.best_params_)
+
+# Make Predictions
+
+predicted_test_labels = best_random_forest_model.predict(testing_feature_matrix_X)
+predicted_test_probabilities = best_random_forest_model.predict_proba(testing_feature_matrix_X)[:, 1]
