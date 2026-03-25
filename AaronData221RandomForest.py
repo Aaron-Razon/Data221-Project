@@ -120,3 +120,24 @@ print(random_forest_grid_search.best_params_)
 
 predicted_test_labels = best_random_forest_model.predict(testing_feature_matrix_X)
 predicted_test_probabilities = best_random_forest_model.predict_proba(testing_feature_matrix_X)[:, 1]
+
+# Evaluate The Model
+
+random_forest_accuracy = accuracy_score(testing_target_vector_y, predicted_test_labels)
+random_forest_precision = precision_score(testing_target_vector_y, predicted_test_labels)
+random_forest_recall = recall_score(testing_target_vector_y, predicted_test_labels)
+random_forest_f1_score = f1_score(testing_target_vector_y, predicted_test_labels)
+random_forest_roc_auc = roc_auc_score(testing_target_vector_y, predicted_test_probabilities)
+
+print("\n=== RANDOM FOREST RESULTS ===")
+print(f"Accuracy:  {random_forest_accuracy:.4f}")
+print(f"Precision: {random_forest_precision:.4f}")
+print(f"Recall:    {random_forest_recall:.4f}")
+print(f"F1-score:  {random_forest_f1_score:.4f}")
+print(f"ROC-AUC:   {random_forest_roc_auc:.4f}")
+
+print("\nClassification Report:")
+print(classification_report(testing_target_vector_y, predicted_test_labels))
+
+print("Confusion Matrix:")
+print(confusion_matrix(testing_target_vector_y, predicted_test_labels))
