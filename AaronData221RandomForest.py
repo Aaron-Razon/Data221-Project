@@ -2,6 +2,8 @@
 # AIRLINE PASSENGER SATISFACTION
 
 import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
@@ -141,3 +143,25 @@ print(classification_report(testing_target_vector_y, predicted_test_labels))
 
 print("Confusion Matrix:")
 print(confusion_matrix(testing_target_vector_y, predicted_test_labels))
+
+# Display And Save Confusion Matrix
+
+with PdfPages("random_forest_confusion_matrix.pdf") as pdf:
+    figure_object, axis_object = plt.subplots(figsize=(6, 5))
+
+    ConfusionMatrixDisplay.from_predictions(
+        testing_target_vector_y,
+        predicted_test_labels,
+        display_labels=["Neutral/Dissatisfied", "Satisfied"],
+        ax = axis_object,
+        colorbar=False
+    )
+
+    axis_object.set_title("Random Forest Confusion Matrix")
+    axis_object.set_xlabel("Predicted Label")
+    axis_object.set_ylabel("True Label")
+
+    plt.tight_layout()
+    pdf.savefig(figure_object)
+    plt.show()
+    plt.close(figure_object)
