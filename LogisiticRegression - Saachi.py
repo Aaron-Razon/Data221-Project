@@ -50,3 +50,31 @@ y_test = test_df["satisfaction"]
 
 num_features = X_train.select_dtypes(include=["number"]).columns
 cat_features = X_train.select_dtypes(exclude=["number"]).columns
+
+# ============================================
+# 4. PREPROCESSING
+# ============================================
+
+num_pipeline = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("scaler", StandardScaler())
+])
+
+cat_pipeline = Pipeline([
+    ("imputer", SimpleImputer(strategy="most_frequent")),
+    ("onehot", OneHotEncoder(handle_unknown="ignore"))
+])
+preprocessor = ColumnTransformer([
+    ("num", num_pipeline, num_features),
+    ("cat", cat_pipeline, cat_features)
+])
+# ============================================
+# 5. MODEL PIPELINE
+# ============================================
+
+model = Pipeline([
+    ("preprocess", preprocessor),
+    ("logreg", LogisticRegression(max_iter=1000))
+])
+
+
