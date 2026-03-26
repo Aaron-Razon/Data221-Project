@@ -77,3 +77,73 @@ preprocessor = ColumnTransformer(transformers=[
     ("num", numeric_pipeline, numeric_cols),
     ("cat", categorical_pipeline, categorical_cols)
 ])
+
+# ============================================
+# 5. BUILD THE FULL PIPELINE
+# ============================================
+
+pipeline = Pipeline(steps=[
+    ("preprocess", preprocessor),
+    ("model", DecisionTreeClassifier(random_state=42))
+])
+
+# ============================================
+# 6. HYPERPARAMETER TUNING WITH CROSS-VALIDATION
+# max_depth — how many levels deep the tree can grow
+# min_samples_split — minimum samples required to split a node
+# ============================================
+
+param_grid = {
+    "model__max_depth": [5, 10, 15, None],
+    "model__min_samples_split": [2, 5, 10]
+}
+
+grid_search = GridSearchCV(
+    estimator=pipeline,
+    param_grid=param_grid,
+    scoring="f1",  # optimise for F1-score
+    cv=5,  # 5-fold cross-validation
+    n_jobs=-1,  # use all CPU cores
+    refit=True  # refit best model on full training set
+)
+
+grid_search.fit(X_train, y_train)
+
+print("\nBest Parameters:", grid_search.best_params_)
+
+# ============================================
+# 7. EVALUATE ON THE TEST SET
+# ============================================
+
+best_model = grid_search.best_estimator_
+
+y_pred = best_model.predict(X_test)
+y_score = best_model.predict_proba(X_test)[:, 1]  # probability of "satisfied"
+
+print(f"\nAccuracy:  {accuracy_score(y_test, y_pred):.4f}")
+print(f"Precision: {precision_score(y_test, y_pred):.4f}")
+print(f"Recall:    {recall_score(y_test, y_pred):.4f}")
+print(f"F1-score:  {f1_score(y_test, y_pred):.4f}")
+print(f"ROC-AUC:   {roc_auc_score(y_test, y_score):.4f}")
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred,
+                            target_names=["Neutral/Dissatisfied", "Satisfied"]))
+
+# ============================================
+# 8. CONFUSION MATRIX PLOT
+# ============================================
+
+fig, ax = plt.subplots(figsize=(6, 5))
+ConfusionMatrixDisplay.from_predictions(
+    y_test, y_pred,
+    display_labels=["Neutral/Dissatisfied", "Satisfied"],
+    ax=ax,
+    colorbar=False
+)
+ax.set_title("Decision Tree — Confusion Matrix")
+ax.set_xlabel("Predicted Label")
+ax.set_ylabel("True Label")
+plt.tight_layout()
+plt.savefig("decision_tree_confusion_matrix.png", dpi=150)
+plt.show()
