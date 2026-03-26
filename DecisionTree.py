@@ -134,7 +134,7 @@ print(classification_report(y_test, y_pred,
 # 8. CONFUSION MATRIX PLOT
 # ============================================
 
-fig, ax = plt.subplots(figsize=(6, 5))
+fig, ax = plt.subplots(figsize=(6.5, 5))
 ConfusionMatrixDisplay.from_predictions(
     y_test, y_pred,
     display_labels=["Neutral/Dissatisfied", "Satisfied"],
