@@ -50,11 +50,14 @@ numeric_features = X_train.select_dtypes(include=["int64", "float64"]).columns
 categorical_features = X_train.select_dtypes(include=["object"]).columns
 
 numeric_pipeline = Pipeline([
+    # "scaler" standardizes numerical values so that they are on the same scale for measuring knn distance.
+    # "imputer" replaces missing values with the mean, are replaces missing categories with most common.
     ("imputer", SimpleImputer(strategy="mean")),
     ("scaler", StandardScaler())
 ])
 
 categorical_pipeline = Pipeline([
+    # "onehot" converts categories into binary numbers 0 or 1.
     ("imputer", SimpleImputer(strategy="most_frequent")),
     ("onehot", OneHotEncoder(handle_unknown="ignore"))
 ])
