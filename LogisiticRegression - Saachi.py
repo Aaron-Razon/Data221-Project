@@ -43,3 +43,10 @@ y_train = train_df["satisfaction"]
 
 X_test = test_df.drop(columns="satisfaction")
 y_test = test_df["satisfaction"]
+
+# ============================================
+# 3. FEATURE TYPES
+# ============================================
+
+num_features = X_train.select_dtypes(include=["number"]).columns
+cat_features = X_train.select_dtypes(exclude=["number"]).columns
