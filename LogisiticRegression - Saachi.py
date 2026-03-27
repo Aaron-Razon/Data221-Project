@@ -23,3 +23,23 @@ for col in ["id", "Unnamed: 0"]:
         train_df = train_df.drop(columns=col)
     if col in test_df.columns:
         test_df = test_df.drop(columns=col)
+
+# ============================================
+# 2. TARGET PROCESSING
+# ============================================
+
+train_df["satisfaction"] = train_df["satisfaction"].map({
+    "satisfied": 1,
+    "neutral or dissatisfied": 0
+})
+
+test_df["satisfaction"] = test_df["satisfaction"].map({
+    "satisfied": 1,
+    "neutral or dissatisfied": 0
+})
+
+X_train = train_df.drop(columns="satisfaction")
+y_train = train_df["satisfaction"]
+
+X_test = test_df.drop(columns="satisfaction")
+y_test = test_df["satisfaction"]
