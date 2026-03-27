@@ -49,3 +49,12 @@ y_test = test_df[target_column_name]
 numeric_features = X_train.select_dtypes(include=["int64", "float64"]).columns
 categorical_features = X_train.select_dtypes(include=["object"]).columns
 
+numeric_pipeline = Pipeline([
+    ("imputer", SimpleImputer(strategy="mean")),
+    ("scaler", StandardScaler())
+])
+
+categorical_pipeline = Pipeline([
+    ("imputer", SimpleImputer(strategy="most_frequent")),
+    ("onehot", OneHotEncoder(handle_unknown="ignore"))
+])
