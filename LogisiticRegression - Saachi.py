@@ -70,3 +70,13 @@ preprocessor = ColumnTransformer([
     ("cat", cat_pipeline, cat_features)
 ])
 
+# ============================================
+# 5. MODEL PIPELINE
+# ============================================
+
+model = Pipeline([
+    ("preprocess", preprocessor),
+    ("logreg", LogisticRegression(max_iter=1000))
+])
+
+
