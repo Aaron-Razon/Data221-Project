@@ -46,4 +46,6 @@ y_train = train_df[target_column_name]
 X_test = test_df.drop(columns=target_column_name)
 y_test = test_df[target_column_name]
 
+numeric_features = X_train.select_dtypes(include=["int64", "float64"]).columns
+categorical_features = X_train.select_dtypes(include=["object"]).columns
 
