@@ -78,5 +78,9 @@ model = Pipeline([
     ("preprocess", preprocessor),
     ("logreg", LogisticRegression(max_iter=1000))
 ])
+# ============================================
+# 6. TRAIN
+# ============================================
 
+model.fit(X_train, y_train)
 
