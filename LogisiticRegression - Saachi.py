@@ -1,5 +1,7 @@
 # ============================================
 # LOGISTIC REGRESSION
+# DATA 221 PROJECT
+# AIRLINE PASSENGER SATISFACTION
 # ============================================
 
 import pandas as pd
