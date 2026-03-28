@@ -171,7 +171,7 @@ ConfusionMatrixDisplay.from_predictions(
 )
 ax.set_title("Decision Tree — Confusion Matrix")
 ax.set_xlabel("Predicted Label")
-ax.set_ylabel("True Label")
+ax.set_ylabel("Actual Label")
 plt.tight_layout()
 plt.savefig("decision_tree_confusion_matrix.png", dpi=150)
 plt.show()
