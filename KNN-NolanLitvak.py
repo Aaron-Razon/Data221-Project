@@ -1,6 +1,5 @@
 from sklearn.neighbors import KNeighborsClassifier
 import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -105,3 +104,7 @@ print(f"F1: {f1_score(y_test, y_predict):.4f}")
 # Stands for "Receiver Operating Characteristic Area Under Curve"
 # Shows how well the model distinguishes classes between 0 and 1.
 print(f"ROC AUC: {roc_auc_score(y_test, y_probability):.4f}")
+
+# Prints the confusion matrix.
+conf_mtx = confusion_matrix(y_test, y_predict)
+print(conf_mtx)
