@@ -4,6 +4,8 @@
 # ================================================
 
 import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
@@ -14,6 +16,18 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    roc_auc_score,
+    classification_report,
+    confusion_matrix,
+    ConfusionMatrixDisplay
+)
 
 # ============================================
 # 1. LOAD THE DATA
@@ -133,3 +147,108 @@ model_configurations = {
         }
     }
 }
+
+# ============================================
+# 6. TRAIN, TUNE, AND EVALUATE
+# ============================================
+
+all_model_results = []
+all_classification_reports = []
+best_fitted_models = {}
+
+with PdfPages("confusion_matrices.pdf") as confusion_matrix_pdf:
+    for model_name, model_configuration in model_configurations.items():
+        print(f"\n{'=' * 60}")
+        print(f"TRAINING {model_name}")
+        print(f"{'=' * 60}")
+
+        full_model_pipeline = Pipeline(steps=[
+            ("preprocess", model_configuration["preprocessor"]),
+            ("model", model_configuration["model"])
+        ])
+
+        model_grid_search = GridSearchCV(
+            estimator=full_model_pipeline,
+            param_grid=model_configuration["param_grid"],
+            scoring="f1",
+            cv=5,
+            n_jobs=-1,
+            refit=True
+        )
+
+        model_grid_search.fit(training_feature_matrix_X, training_target_vector_y)
+
+        best_fitted_model = model_grid_search.best_estimator_
+        best_fitted_models[model_name] = best_fitted_model
+
+        predicted_test_labels = best_fitted_model.predict(testing_feature_matrix_X)
+
+        if hasattr(best_fitted_model, "predict_proba"):
+            predicted_test_scores = best_fitted_model.predict_proba(testing_feature_matrix_X)[:, 1]
+        else:
+            predicted_test_scores = best_fitted_model.decision_function(testing_feature_matrix_X)
+
+        model_accuracy = accuracy_score(testing_target_vector_y, predicted_test_labels)
+        model_precision = precision_score(testing_target_vector_y, predicted_test_labels)
+        model_recall = recall_score(testing_target_vector_y, predicted_test_labels)
+        model_f1_score = f1_score(testing_target_vector_y, predicted_test_labels)
+        model_roc_auc = roc_auc_score(testing_target_vector_y, predicted_test_scores)
+
+        model_result_dictionary = {
+            "Model": model_name,
+            "Best Parameters": str(model_grid_search.best_params_),
+            "Accuracy": model_accuracy,
+            "Precision": model_precision,
+            "Recall": model_recall,
+            "F1-score": model_f1_score,
+            "ROC-AUC": model_roc_auc
+        }
+
+        all_model_results.append(model_result_dictionary)
+
+        print("Best Parameters:", model_grid_search.best_params_)
+        print(f"Accuracy:  {model_accuracy:.4f}")
+        print(f"Precision: {model_precision:.4f}")
+        print(f"Recall:    {model_recall:.4f}")
+        print(f"F1-score:  {model_f1_score:.4f}")
+        print(f"ROC-AUC:   {model_roc_auc:.4f}")
+
+        current_classification_report = classification_report(
+            testing_target_vector_y,
+            predicted_test_labels,
+            target_names=["Neutral/Dissatisfied", "Satisfied"],
+            zero_division=0
+        )
+
+        print("\nClassification Report:")
+        print(current_classification_report)
+
+        print("Confusion Matrix:")
+        print(confusion_matrix(testing_target_vector_y, predicted_test_labels))
+
+        all_classification_reports.append(
+            f"{'=' * 70}\n"
+            f"{model_name}\n"
+            f"{'=' * 70}\n"
+            f"Best Parameters: {model_grid_search.best_params_}\n\n"
+            f"{current_classification_report}\n"
+        )
+
+        figure_object, axis_object = plt.subplots(figsize=(6.5, 5))
+
+        ConfusionMatrixDisplay.from_predictions(
+            testing_target_vector_y,
+            predicted_test_labels,
+            display_labels=["Neutral/Dissatisfied", "Satisfied"],
+            ax=axis_object,
+            colorbar=False
+        )
+
+        axis_object.set_title(f"{model_name} Confusion Matrix")
+        axis_object.set_xlabel("Predicted Label")
+        axis_object.set_ylabel("True Label")
+
+        plt.tight_layout()
+        confusion_matrix_pdf.savefig(figure_object)
+        plt.show()
+        plt.close(figure_object)
