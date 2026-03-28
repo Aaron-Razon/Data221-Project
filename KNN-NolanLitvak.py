@@ -61,3 +61,18 @@ categorical_pipeline = Pipeline([
     ("imputer", SimpleImputer(strategy="most_frequent")),
     ("onehot", OneHotEncoder(handle_unknown="ignore"))
 ])
+
+preprocessor = ColumnTransformer([
+    # "num" applies the numeric pipeline to the numeric columns in the dataset.
+    # "cat" applies the categorical pipeline to the categorical columns in the dataset.
+    ("num", numeric_pipeline, numeric_features),
+    ("cat", categorical_pipeline, categorical_features)
+])
+
+model = Pipeline([
+    # "preprocessor" runs both pipelines.
+    # "knn" is the learning model training by looking at a specified amount of data-points.
+    # The model will predict on the majority of specified points (satisfied, neutral or not satisfied).
+    ("preprocessor", preprocessor),
+    ("knn", KNeighborsClassifier(n_neighbors=5))
+])
