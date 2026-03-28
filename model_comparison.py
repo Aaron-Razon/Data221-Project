@@ -42,3 +42,13 @@ training_target_vector_y = training_dataframe[target_column_name]
 
 testing_feature_matrix_X = testing_dataframe.drop(columns=[target_column_name])
 testing_target_vector_y = testing_dataframe[target_column_name]
+
+# ============================================
+# 3. IDENTIFY NUMERIC AND CATEGORICAL FEATURES
+# ============================================
+
+numeric_feature_names = training_feature_matrix_X.select_dtypes(include=["number"]).columns.tolist()
+categorical_feature_names = training_feature_matrix_X.select_dtypes(exclude=["number"]).columns.tolist()
+
+print("\nNumeric Features:", numeric_feature_names)
+print("\nCategorical Features:", categorical_feature_names)
