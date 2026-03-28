@@ -165,7 +165,31 @@ print("Confusion Matrix:")
 print(confusion_matrix(testing_target_vector_y, predicted_test_labels))
 
 # ============================================
-# 10. DISPLAY AND SAVE CONFUSION MATRIX
+# 10. DISPLAY AND SAVE FEATURE IMPORTANCE
+# ============================================
+
+fitted_preprocessor = best_random_forest_model.named_steps["preprocess"]
+fitted_random_forest_model = best_random_forest_model.named_steps["model"]
+
+processed_feature_names = fitted_preprocessor.get_feature_names_out()
+feature_importance_scores = fitted_random_forest_model.feature_importances_
+
+feature_importance_dataframe = pd.DataFrame({
+    "Feature": processed_feature_names,
+    "Importance": feature_importance_scores
+})
+
+feature_importance_dataframe = feature_importance_dataframe.sort_values(
+    by="Importance", ascending=False
+)
+
+print("\nTop 10 Most Important Features:")
+print(feature_importance_dataframe.head(10))
+
+feature_importance_dataframe.to_csv("random_forest_feature_importance.csv", index=False)
+
+# ============================================
+# 11. DISPLAY AND SAVE CONFUSION MATRIX
 # ============================================
 
 with PdfPages("random_forest_confusion_matrix.pdf") as pdf:
@@ -189,7 +213,7 @@ with PdfPages("random_forest_confusion_matrix.pdf") as pdf:
     plt.close(figure_object)
 
 # ============================================
-# 11. SAVE RESULTS TO A CSV FILE
+# 12. SAVE RESULTS TO A CSV FILE
 # ============================================
 
 random_forest_results_dataframe = pd.DataFrame([
