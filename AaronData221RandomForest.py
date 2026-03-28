@@ -1,5 +1,7 @@
+# ============================================
 # DATA 221 PROJECT: RANDOM FOREST MODEL
 # AIRLINE PASSENGER SATISFACTION
+# ============================================
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,15 +26,19 @@ from sklearn.metrics import (
 )
 
 
-# Load the Data
+# ============================================
+# 1. LOAD THE DATA
+# ============================================
 
 training_dataframe = pd.read_csv("train.csv")
 testing_dataframe = pd.read_csv("test.csv")
 
-print("Training Data Shape:", training_dataframe.shape)
+print("\nTraining Data Shape:", training_dataframe.shape)
 print("Testing Data Shape:", testing_dataframe.shape)
 
-# Basic Cleanup
+# ============================================
+# 2. BASIC CLEANUP
+# ============================================
 
 columns_to_drop_if_present = ["id", "Unnamed: 0"]
 
@@ -52,7 +58,9 @@ target_label_mapping = {
 training_dataframe[target_column_name] = training_dataframe[target_column_name].map(target_label_mapping)
 testing_dataframe[target_column_name] = testing_dataframe[target_column_name].map(target_label_mapping)
 
-# Split Features and Target
+# ============================================
+# 3. SPLIT FEATURES AND TARGET
+# ============================================
 
 training_feature_matrix_X = training_dataframe.drop(columns=[target_column_name])
 training_target_vector_y = training_dataframe[target_column_name]
@@ -60,15 +68,19 @@ training_target_vector_y = training_dataframe[target_column_name]
 testing_feature_matrix_X = testing_dataframe.drop(columns=[target_column_name])
 testing_target_vector_y = testing_dataframe[target_column_name]
 
-# Identify Numeric and Categorical Features
+# ============================================
+# 4. IDENTIFY NUMERIC AND CATEGORICAL FEATURES
+# ============================================
 
 numeric_feature_names = training_feature_matrix_X.select_dtypes(include=["number"]).columns.tolist()
 categorical_feature_names = training_feature_matrix_X.select_dtypes(exclude=["number"]).columns.tolist()
 
-print("Numeric Features:", numeric_feature_names)
-print("Categorical Features:", categorical_feature_names)
+print("\nNumeric Features:", numeric_feature_names)
+print("\nCategorical Features:", categorical_feature_names)
 
-# Preprocessing Pipeline
+# ============================================
+# 5. PREPROCESSING PIPELINE
+# ============================================
 
 numeric_preprocessing_pipeline = Pipeline(steps=[
     ("imputer", SimpleImputer(strategy="median"))
@@ -86,14 +98,18 @@ full_preprocessor = ColumnTransformer(
     ]
 )
 
-# Build The Random Forest Pipeline
+# ============================================
+# 6. BUILD THE RANDOM FOREST PIPELINE
+# ============================================
 
 random_forest_pipeline = Pipeline(steps=[
     ("preprocess", full_preprocessor),
     ("model", RandomForestClassifier(random_state=42))
 ])
 
-# Hyperparameter Tuning
+# ============================================
+# 7. HYPERPARAMETER TUNING
+# ============================================
 
 random_forest_parameter_grid = {
     "model__n_estimators": [100, 200],
@@ -118,12 +134,16 @@ best_random_forest_model = random_forest_grid_search.best_estimator_
 print("\nBest Parameters:")
 print(random_forest_grid_search.best_params_)
 
-# Make Predictions
+# ============================================
+# 8. MAKE PREDICTIONS
+# ============================================
 
 predicted_test_labels = best_random_forest_model.predict(testing_feature_matrix_X)
 predicted_test_probabilities = best_random_forest_model.predict_proba(testing_feature_matrix_X)[:, 1]
 
-# Evaluate The Model
+# ============================================
+# 9. EVALUATE THE MODEL
+# ============================================
 
 random_forest_accuracy = accuracy_score(testing_target_vector_y, predicted_test_labels)
 random_forest_precision = precision_score(testing_target_vector_y, predicted_test_labels)
@@ -144,10 +164,12 @@ print(classification_report(testing_target_vector_y, predicted_test_labels))
 print("Confusion Matrix:")
 print(confusion_matrix(testing_target_vector_y, predicted_test_labels))
 
-# Display And Save Confusion Matrix
+# ============================================
+# 10. DISPLAY AND SAVE CONFUSION MATRIX
+# ============================================
 
 with PdfPages("random_forest_confusion_matrix.pdf") as pdf:
-    figure_object, axis_object = plt.subplots(figsize=(6, 5))
+    figure_object, axis_object = plt.subplots(figsize=(6.5, 5))
 
     ConfusionMatrixDisplay.from_predictions(
         testing_target_vector_y,
@@ -166,7 +188,9 @@ with PdfPages("random_forest_confusion_matrix.pdf") as pdf:
     plt.show()
     plt.close(figure_object)
 
-# Save Results To A CSV File
+# ============================================
+# 11. SAVE RESULTS TO A CSV FILE
+# ============================================
 
 random_forest_results_dataframe = pd.DataFrame([
     {
