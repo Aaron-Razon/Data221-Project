@@ -179,12 +179,22 @@ feature_importance_dataframe = pd.DataFrame({
     "Importance": feature_importance_scores
 })
 
+feature_importance_dataframe["Feature"] = (
+    feature_importance_dataframe["Feature"]
+    .str.replace("num__", "", regex=False)
+    .str.replace("cat__", "", regex=False)
+    .str.replace("_", " = ", regex=False)
+)
+
+feature_importance_dataframe["Importance"] = feature_importance_dataframe["Importance"].round(4)
+
 feature_importance_dataframe = feature_importance_dataframe.sort_values(
-    by="Importance", ascending=False
+    by="Importance",
+    ascending=False
 )
 
 print("\nTop 10 Most Important Features:")
-print(feature_importance_dataframe.head(10))
+print(feature_importance_dataframe.head(10).to_string(index=False))
 
 feature_importance_dataframe.to_csv("random_forest_feature_importance.csv", index=False)
 
@@ -233,3 +243,4 @@ random_forest_results_dataframe.to_csv("random_forest_results.csv", index=False)
 print("\nSaved Files:")
 print("- random_forest_confusion_matrix.pdf")
 print("- random_forest_results.csv")
+print("- random_forest_feature_importance.csv")
