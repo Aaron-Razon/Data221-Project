@@ -175,3 +175,39 @@ ax.set_ylabel("Actual Label")
 plt.tight_layout()
 plt.savefig("decision_tree_confusion_matrix.png", dpi=150)
 plt.show()
+
+
+# ============================================
+# 9. FEATURE IMPORTANCE
+# ============================================
+
+feature_names = (
+    numeric_cols +
+    list(best_model.named_steps["preprocess"]
+         .named_transformers_["cat"]
+         .named_steps["onehot"]
+         .get_feature_names_out(categorical_cols))
+)
+
+importances = best_model.named_steps["model"].feature_importances_
+
+importance_df = pd.DataFrame({
+    "Feature": feature_names,
+    "Importance": importances
+}).sort_values("Importance", ascending=False)
+
+print("\nTop 10 Features:")
+print(importance_df.head(10).to_string(index=False))
+
+top_n = 15  # show top 15 features
+
+plt.figure(figsize=(10, 6))
+plt.barh(
+    importance_df["Feature"].head(top_n)[::-1],
+    importance_df["Importance"].head(top_n)[::-1]
+)
+plt.xlabel("Importance Score")
+plt.title("Top Features Most Correlated with Passenger Satisfaction")
+plt.tight_layout()
+plt.savefig("feature_importance.png", dpi=150)
+plt.show()
