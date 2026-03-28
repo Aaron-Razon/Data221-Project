@@ -10,6 +10,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+
 # ============================================
 # 1. LOAD THE DATA
 # ============================================
@@ -89,3 +94,42 @@ unscaled_full_preprocessor = ColumnTransformer(
         ("cat", categorical_preprocessing_pipeline, categorical_feature_names)
     ]
 )
+
+# ============================================
+# 5. MODEL CONFIGURATIONS
+# ============================================
+
+model_configurations = {
+    "Logistic Regression": {
+        "preprocessor": scaled_full_preprocessor,
+        "model": LogisticRegression(max_iter=1000, random_state=42),
+        "param_grid": {
+            "model__C": [0.1, 1.0, 10.0]
+        }
+    },
+    "KNN": {
+        "preprocessor": scaled_full_preprocessor,
+        "model": KNeighborsClassifier(),
+        "param_grid": {
+            "model__n_neighbors": [3, 5, 7, 9],
+            "model__weights": ["uniform", "distance"]
+        }
+    },
+    "Decision Tree": {
+        "preprocessor": unscaled_full_preprocessor,
+        "model": DecisionTreeClassifier(random_state=42),
+        "param_grid": {
+            "model__max_depth": [5, 10, 15, None],
+            "model__min_samples_split": [2, 5, 10]
+        }
+    },
+    "Random Forest": {
+        "preprocessor": unscaled_full_preprocessor,
+        "model": RandomForestClassifier(random_state=42),
+        "param_grid": {
+            "model__n_estimators": [100, 200],
+            "model__max_depth": [10, 20, None],
+            "model__min_samples_split": [2, 5]
+        }
+    }
+}
