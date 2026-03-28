@@ -15,21 +15,25 @@ from sklearn.metrics import (
     confusion_matrix,
     ConfusionMatrixDisplay
 )
-
+# These lines read the downloaded datasets. Both train and test from my folder.
 train_df = pd.read_csv(r"C:\Users\nolan\OneDrive\Code\train.csv")
 test_df = pd.read_csv(r"C:\Users\nolan\OneDrive\Code\test.csv")
 
+# Prints the shapes of the datasets
+# Shows how many rows and columns there are.
 print("Train Shape:", train_df.shape)
 print("Test Shape:", test_df.shape)
 
 columns_to_drop_if_present = ["id", "Unnamed: 0"]
 
+# This loop rids of the useless columns to make the model more accurate.
 for column_name in columns_to_drop_if_present:
     if column_name in train_df.columns:
         train_df = train_df.drop(columns=column_name)
     if column_name in test_df.columns:
         test_df = test_df.drop(columns=column_name)
 
+# Name of target variable
 target_column_name = "satisfaction"
 
 target_label_mapping = {
@@ -40,6 +44,8 @@ target_label_mapping = {
 train_df[target_column_name] = train_df[target_column_name].map(target_label_mapping)
 test_df[target_column_name] = test_df[target_column_name].map(target_label_mapping)
 
+# This splits the dataset into X features and y labels.
+# Drops the targeted column to separate it from the dataset so that y_train has a body.
 X_train = train_df.drop(columns=target_column_name)
 y_train = train_df[target_column_name]
 
@@ -62,6 +68,8 @@ categorical_pipeline = Pipeline([
     ("onehot", OneHotEncoder(handle_unknown="ignore"))
 ])
 
+# The pipeline takes the raw data and brings it through the preprocessor.
+# The preprocessor cleans and models the data to eliminate empty spaces.
 preprocessor = ColumnTransformer([
     # "num" applies the numeric pipeline to the numeric columns in the dataset.
     # "cat" applies the categorical pipeline to the categorical columns in the dataset.
@@ -76,3 +84,24 @@ model = Pipeline([
     ("preprocessor", preprocessor),
     ("knn", KNeighborsClassifier(n_neighbors=5))
 ])
+# This fits the model
+model.fit(X_train, y_train)
+
+y_predict = model.predict(X_test)
+y_probability = model.predict_proba(X_test)[:, 1]
+
+# The accuracy tells you how accurate the model is. a.k.a (TP+TN)/(TP+TN+FP+FN)
+print(f"Accuracy: {accuracy_score(y_test, y_predict):.4f}")
+
+# The precision tells you how trustworthy the positive predictions are. a.k.a TP/(TP+FP)
+print(f"Precision: {precision_score(y_test, y_predict):.4f}")
+
+# The recall tells you how well the model caught the positives. a.k.a TP/(TP+FN)
+print(f"Recall: {recall_score(y_test, y_predict):.4f}")
+
+# The F1-score takes precision and recall and puts it into one number. a.k.a 2(PR)/(P+R)
+print(f"F1: {f1_score(y_test, y_predict):.4f}")
+
+# Stands for "Receiver Operating Characteristic Area Under Curve"
+# Shows how well the model distinguishes classes between 0 and 1.
+print(f"ROC AUC: {roc_auc_score(y_test, y_probability):.4f}")
