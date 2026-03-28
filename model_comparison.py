@@ -252,3 +252,35 @@ with PdfPages("confusion_matrices.pdf") as confusion_matrix_pdf:
         confusion_matrix_pdf.savefig(figure_object)
         plt.show()
         plt.close(figure_object)
+
+# ============================================
+# 7. SAVE CLASSIFICATION REPORTS
+# ============================================
+
+with open("classification_reports.txt", "w", encoding="utf-8") as report_file:
+    report_file.write("\n".join(all_classification_reports))
+
+# ============================================
+# 8. RESULTS TABLE
+# ============================================
+
+results_dataframe = pd.DataFrame(all_model_results)
+results_dataframe = results_dataframe.sort_values(by="F1-score", ascending=False).reset_index(drop=True)
+
+results_dataframe.to_csv("model_comparison_results.csv", index=False)
+
+rounded_results_dataframe = results_dataframe.copy()
+rounded_results_dataframe["Accuracy"] = rounded_results_dataframe["Accuracy"].round(4)
+rounded_results_dataframe["Precision"] = rounded_results_dataframe["Precision"].round(4)
+rounded_results_dataframe["Recall"] = rounded_results_dataframe["Recall"].round(4)
+rounded_results_dataframe["F1-score"] = rounded_results_dataframe["F1-score"].round(4)
+rounded_results_dataframe["ROC-AUC"] = rounded_results_dataframe["ROC-AUC"].round(4)
+
+print("\nFINAL MODEL COMPARISON")
+print(rounded_results_dataframe.to_string(index=False))
+
+best_model_name = results_dataframe.iloc[0]["Model"]
+best_model_f1_score = results_dataframe.iloc[0]["F1-score"]
+
+print("\nBest Overall Model:")
+print(f"{best_model_name} (F1-score = {best_model_f1_score:.4f})")
