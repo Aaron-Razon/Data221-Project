@@ -198,6 +198,31 @@ print(feature_importance_dataframe.head(10).to_string(index=False))
 
 feature_importance_dataframe.to_csv("random_forest_feature_importance.csv", index=False)
 
+# Create a bar chart for the top 10 most important features
+top_10_feature_importance_dataframe = feature_importance_dataframe.head(10).copy()
+
+# Put the smallest at the bottom and biggest at the top
+top_10_feature_importance_dataframe = top_10_feature_importance_dataframe.sort_values(
+    by="Importance",
+    ascending=True
+)
+
+figure_object, axis_object = plt.subplots(figsize=(8, 6))
+
+axis_object.barh(
+    top_10_feature_importance_dataframe["Feature"],
+    top_10_feature_importance_dataframe["Importance"]
+)
+
+axis_object.set_title("Top 10 Random Forest Feature Importances")
+axis_object.set_xlabel("Importance")
+axis_object.set_ylabel("Feature")
+
+plt.tight_layout()
+plt.savefig("random_forest_feature_importance.pdf")
+plt.show()
+plt.close(figure_object)
+
 # ============================================
 # 11. DISPLAY AND SAVE CONFUSION MATRIX
 # ============================================
@@ -244,3 +269,4 @@ print("\nSaved Files:")
 print("- random_forest_confusion_matrix.pdf")
 print("- random_forest_results.csv")
 print("- random_forest_feature_importance.csv")
+print("- random_forest_feature_importance.pdf")
