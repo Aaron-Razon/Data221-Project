@@ -91,8 +91,12 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 y_prob = model.predict_proba(X_test)[:, 1]
 
+print("\n=== LOGISTIC REGRESSION RESULTS ===")
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print("Precision:", precision_score(y_test, y_pred))
 print("Recall:", recall_score(y_test, y_pred))
 print("F1-score:", f1_score(y_test, y_pred))
 print("ROC-AUC:", roc_auc_score(y_test, y_prob))
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
