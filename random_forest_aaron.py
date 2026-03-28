@@ -165,7 +165,7 @@ print("Confusion Matrix:")
 print(confusion_matrix(testing_target_vector_y, predicted_test_labels))
 
 # ============================================
-# 10. DISPLAY AND SAVE FEATURE IMPORTANCE
+# 10. FEATURE IMPORTANCE OUTPUT
 # ============================================
 
 fitted_preprocessor = best_random_forest_model.named_steps["preprocess"]
@@ -201,7 +201,7 @@ feature_importance_dataframe.to_csv("random_forest_feature_importance.csv", inde
 # Create a bar chart for the top 10 most important features
 top_10_feature_importance_dataframe = feature_importance_dataframe.head(10).copy()
 
-# Put the smallest at the bottom and biggest at the top
+# Place the smallest importance at the bottom and the largest at the top
 top_10_feature_importance_dataframe = top_10_feature_importance_dataframe.sort_values(
     by="Importance",
     ascending=True
