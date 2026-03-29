@@ -411,3 +411,44 @@ with PdfPages("feature_importance_charts.pdf") as feature_importance_pdf:
         feature_importance_pdf.savefig(figure_object)
         plt.show()
         plt.close(figure_object)
+
+# ============================================
+# 11. FINAL MODEL COMPARISON BAR CHARTS
+# ============================================
+
+metrics_for_bar_charts = ["Accuracy", "Precision", "Recall", "F1-score", "ROC-AUC"]
+
+with PdfPages("model_comparison_bar_charts.pdf") as model_comparison_bar_chart_pdf:
+    for metric_name in metrics_for_bar_charts:
+        chart_dataframe = results_dataframe.sort_values(by=metric_name, ascending=True)
+
+        figure_object, axis_object = plt.subplots(figsize=(8, 5))
+
+        axis_object.barh(
+            chart_dataframe["Model"],
+            chart_dataframe[metric_name]
+        )
+
+        axis_object.set_title(f"Model Comparison by {metric_name}")
+        axis_object.set_xlabel(metric_name)
+        axis_object.set_ylabel("Model")
+
+        plt.tight_layout()
+        model_comparison_bar_chart_pdf.savefig(figure_object)
+        plt.show()
+        plt.close(figure_object)
+
+# ============================================
+# 12. SAVED FILES
+# ============================================
+
+print("\nSaved Files:")
+print("- confusion_matrices.pdf")
+print("- classification_reports.txt")
+print("- model_comparison_results.csv")
+print("- logistic_regression_coefficients.csv")
+print("- logistic_regression_coefficients.pdf")
+print("- decision_tree_feature_importance.csv")
+print("- random_forest_feature_importance.csv")
+print("- feature_importance_charts.pdf")
+print("- model_comparison_bar_charts.pdf")
