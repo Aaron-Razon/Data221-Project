@@ -1,4 +1,7 @@
 from sklearn.neighbors import KNeighborsClassifier
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use("Agg")
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
@@ -106,5 +109,9 @@ print(f"F1: {f1_score(y_test, y_predict):.4f}")
 print(f"ROC AUC: {roc_auc_score(y_test, y_probability):.4f}")
 
 # Prints the confusion matrix.
-conf_mtx = confusion_matrix(y_test, y_predict)
-print(conf_mtx)
+cnf_matrix = confusion_matrix(y_test, y_predict)
+display = ConfusionMatrixDisplay(confusion_matrix=cnf_matrix)
+display.plot()
+plt.savefig("confusion_matrix.png")
+
+print(classification_report(y_test, y_predict))
