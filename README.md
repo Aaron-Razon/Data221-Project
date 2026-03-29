@@ -40,7 +40,8 @@ The final comparison program:
 - trains and tunes four machine learning models
 - evaluates each model on the test set
 - compares the final results across all models
-- saves the final results table and confusion matrix outputs
+- saves confusion matrices, classification reports, coefficient and feature importance outputs, and final model comparison results
+
 
 ## Evaluation Metrics
 
@@ -89,9 +90,30 @@ Confusion matrices were also generated to help visualize model performance.
 - `confusion_matrices.pdf`  
   Confusion matrices from the final comparison program
 
+- `classification_reports.txt`  
+  Classification reports for all four models
+
+- `model_comparison_bar_charts.pdf`  
+  Bar charts comparing model performance across evaluation metrics
+
+- `logistic_regression_coefficients.csv`  
+  Logistic Regression coefficient values
+
+- `logistic_regression_coefficients.pdf`  
+  Bar chart of the top Logistic Regression coefficients
+
+- `decision_tree_feature_importance.csv`  
+  Decision Tree feature importance values
+
+- `random_forest_feature_importance.csv`  
+  Random Forest feature importance values
+
+- `feature_importance_charts.pdf`  
+  Feature importance charts for the Decision Tree and Random Forest models
+
 ## Contributions
 
-- **Aaron Razon** — Random Forest model and project integration
+- **Aaron Razon** — Random Forest model, feature importance analysis, and model comparison integration
 - **Nolan Litvak** — K-Nearest Neighbors model
 - **Andrew Fenning** — Decision Tree model
 - **Saachi Gupta** — Logistic Regression model
@@ -116,9 +138,7 @@ pip install pandas numpy matplotlib scikit-learn
 1. Make sure all project files are in the same folder.
 2. Make sure `train.csv` and `test.csv` are included in the folder.
 3. Run `model_comparison.py`.
-4. Check the final outputs:
-   - `model_comparison_results.csv`
-   - `confusion_matrices.pdf`
+4. Check the generated output files in the project folder.
 
 The individual model files can also be run separately.
 
@@ -126,15 +146,16 @@ The individual model files can also be run separately.
 
 - All models were tested using the same train-test split for fairness.
 - Preprocessing was done inside each model pipeline to help avoid data leakage.
-- Each individual model file can produce its own outputs, such as confusion matrices or other displays.
-- These extra individual output files were not included in the repository to keep the project cleaner and less cluttered.
-- The repository includes the final combined outputs from `model_comparison.py`.
+- The main results for the project come from `model_comparison.py`.
+- Logistic Regression includes coefficient output.
+- Decision Tree and Random Forest include feature importance output.
+- KNN does not include a simple built-in feature importance measure, so its contribution is shown through the final evaluation metrics and confusion matrix.
 
 ## Purpose of the Project
 
 The purpose of this project is to compare different machine learning models on a real classification problem and determine which model performs best for predicting airline passenger satisfaction.
 
-This project also demonstrates important data science steps such as data cleaning, preprocessing, model training, tuning, evaluation, and comparison.
+This project also demonstrates important data science steps such as data cleaning, preprocessing, model training, hyperparameter tuning, evaluation, interpretation, and comparison.
 
 ## Authors
 
