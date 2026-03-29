@@ -1,0 +1,59 @@
+======================================================================
+Logistic Regression
+======================================================================
+Best Parameters: {'model__C': 1.0}
+
+                      precision    recall  f1-score   support
+
+Neutral/Dissatisfied       0.87      0.90      0.89     14573
+           Satisfied       0.87      0.83      0.85     11403
+
+            accuracy                           0.87     25976
+           macro avg       0.87      0.87      0.87     25976
+        weighted avg       0.87      0.87      0.87     25976
+
+
+======================================================================
+KNN
+======================================================================
+Best Parameters: {'model__n_neighbors': 7, 'model__weights': 'distance'}
+
+                      precision    recall  f1-score   support
+
+Neutral/Dissatisfied       0.92      0.96      0.94     14573
+           Satisfied       0.95      0.89      0.92     11403
+
+            accuracy                           0.93     25976
+           macro avg       0.93      0.93      0.93     25976
+        weighted avg       0.93      0.93      0.93     25976
+
+
+======================================================================
+Decision Tree
+======================================================================
+Best Parameters: {'model__max_depth': 15, 'model__min_samples_split': 5}
+
+                      precision    recall  f1-score   support
+
+Neutral/Dissatisfied       0.95      0.97      0.96     14573
+           Satisfied       0.96      0.94      0.95     11403
+
+            accuracy                           0.96     25976
+           macro avg       0.96      0.95      0.95     25976
+        weighted avg       0.96      0.96      0.96     25976
+
+
+======================================================================
+Random Forest
+======================================================================
+Best Parameters: {'model__max_depth': None, 'model__min_samples_split': 2, 'model__n_estimators': 200}
+
+                      precision    recall  f1-score   support
+
+Neutral/Dissatisfied       0.96      0.98      0.97     14573
+           Satisfied       0.97      0.94      0.96     11403
+
+            accuracy                           0.96     25976
+           macro avg       0.96      0.96      0.96     25976
+        weighted avg       0.96      0.96      0.96     25976
+
