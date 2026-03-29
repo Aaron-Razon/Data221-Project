@@ -284,3 +284,130 @@ best_model_f1_score = results_dataframe.iloc[0]["F1-score"]
 
 print("\nBest Overall Model:")
 print(f"{best_model_name} (F1-score = {best_model_f1_score:.4f})")
+
+# ============================================
+# 9. LOGISTIC REGRESSION COEFFICIENT OUTPUT
+# ============================================
+
+best_logistic_regression_model = best_fitted_models["Logistic Regression"]
+
+fitted_logistic_preprocessor = best_logistic_regression_model.named_steps["preprocess"]
+fitted_logistic_regression_model = best_logistic_regression_model.named_steps["model"]
+
+logistic_processed_feature_names = fitted_logistic_preprocessor.get_feature_names_out()
+logistic_coefficient_values = fitted_logistic_regression_model.coef_[0]
+
+logistic_coefficient_dataframe = pd.DataFrame({
+    "Feature": logistic_processed_feature_names,
+    "Coefficient": logistic_coefficient_values
+})
+
+logistic_coefficient_dataframe["Feature"] = (
+    logistic_coefficient_dataframe["Feature"]
+    .str.replace("num__", "", regex=False)
+    .str.replace("cat__", "", regex=False)
+    .str.replace("_", " = ", regex=False)
+)
+
+logistic_coefficient_dataframe["Absolute Coefficient"] = logistic_coefficient_dataframe["Coefficient"].abs()
+logistic_coefficient_dataframe = logistic_coefficient_dataframe.sort_values(
+    by="Absolute Coefficient",
+    ascending=False
+)
+
+print("\nTop 10 Logistic Regression Coefficients:")
+print(
+    logistic_coefficient_dataframe[["Feature", "Coefficient"]]
+    .head(10)
+    .to_string(index=False)
+)
+
+logistic_coefficient_dataframe.to_csv("logistic_regression_coefficients.csv", index=False)
+
+top_10_logistic_coefficient_dataframe = (
+    logistic_coefficient_dataframe[["Feature", "Coefficient"]]
+    .head(10)
+    .copy()
+)
+
+top_10_logistic_coefficient_dataframe = top_10_logistic_coefficient_dataframe.sort_values(
+    by="Coefficient",
+    ascending=True
+)
+
+figure_object, axis_object = plt.subplots(figsize=(8, 6))
+
+axis_object.barh(
+    top_10_logistic_coefficient_dataframe["Feature"],
+    top_10_logistic_coefficient_dataframe["Coefficient"]
+)
+
+axis_object.set_title("Top 10 Logistic Regression Coefficients")
+axis_object.set_xlabel("Coefficient Value")
+axis_object.set_ylabel("Feature")
+
+plt.tight_layout()
+plt.savefig("logistic_regression_coefficients.pdf")
+plt.show()
+plt.close(figure_object)
+
+# ============================================
+# 10. FEATURE IMPORTANCE FOR TREE-BASED MODELS
+# ============================================
+
+with PdfPages("feature_importance_charts.pdf") as feature_importance_pdf:
+    for model_name in ["Decision Tree", "Random Forest"]:
+        best_tree_model = best_fitted_models[model_name]
+
+        fitted_tree_preprocessor = best_tree_model.named_steps["preprocess"]
+        fitted_tree_classifier = best_tree_model.named_steps["model"]
+
+        tree_processed_feature_names = fitted_tree_preprocessor.get_feature_names_out()
+        tree_feature_importance_scores = fitted_tree_classifier.feature_importances_
+
+        tree_feature_importance_dataframe = pd.DataFrame({
+            "Feature": tree_processed_feature_names,
+            "Importance": tree_feature_importance_scores
+        })
+
+        tree_feature_importance_dataframe["Feature"] = (
+            tree_feature_importance_dataframe["Feature"]
+            .str.replace("num__", "", regex=False)
+            .str.replace("cat__", "", regex=False)
+            .str.replace("_", " = ", regex=False)
+        )
+
+        tree_feature_importance_dataframe["Importance"] = tree_feature_importance_dataframe["Importance"].round(4)
+
+        tree_feature_importance_dataframe = tree_feature_importance_dataframe.sort_values(
+            by="Importance",
+            ascending=False
+        )
+
+        print(f"\nTop 10 Features for {model_name}:")
+        print(tree_feature_importance_dataframe.head(10).to_string(index=False))
+
+        output_file_name = model_name.lower().replace(" ", "_") + "_feature_importance.csv"
+        tree_feature_importance_dataframe.to_csv(output_file_name, index=False)
+
+        top_10_tree_feature_importance_dataframe = tree_feature_importance_dataframe.head(10).copy()
+        top_10_tree_feature_importance_dataframe = top_10_tree_feature_importance_dataframe.sort_values(
+            by="Importance",
+            ascending=True
+        )
+
+        figure_object, axis_object = plt.subplots(figsize=(8, 6))
+
+        axis_object.barh(
+            top_10_tree_feature_importance_dataframe["Feature"],
+            top_10_tree_feature_importance_dataframe["Importance"]
+        )
+
+        axis_object.set_title(f"Top 10 {model_name} Feature Importances")
+        axis_object.set_xlabel("Importance")
+        axis_object.set_ylabel("Feature")
+
+        plt.tight_layout()
+        feature_importance_pdf.savefig(figure_object)
+        plt.show()
+        plt.close(figure_object)
