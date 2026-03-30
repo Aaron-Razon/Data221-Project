@@ -81,7 +81,7 @@ preprocessor = ColumnTransformer([
 # Create the base pipeline
 pipeline = Pipeline([
     ("preprocess", preprocessor),
-    ("logreg", LogisticRegression(max_iter=1000, solver='lbfgs'))
+    ("logreg", LogisticRegression(max_iter=1000))
 ])
 
 # Define the grid of C values to test
