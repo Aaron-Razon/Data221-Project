@@ -73,19 +73,44 @@ preprocessor = ColumnTransformer([
     ("cat", cat_pipeline, cat_features)
 ])
 
+from sklearn.model_selection import GridSearchCV
+
 # ============================================
-# 5. MODEL PIPELINE
+# 5. MODEL PIPELINE & HYPERPARAMETER TUNING
 # ============================================
 
-model = Pipeline([
+# Create the base pipeline
+pipeline = Pipeline([
     ("preprocess", preprocessor),
-    ("logreg", LogisticRegression(max_iter=1000))
+    ("logreg", LogisticRegression(max_iter=1000, solver='lbfgs'))
 ])
+
+# Define the grid of C values to test
+# 0.01 is strong regularization, 10 is weak
+param_grid = {
+    'logreg__C': [0.01, 0.1, 1, 10, 100]
+}
+
+# Set up Grid Search
+# cv=5 means 5-fold cross-validation
+grid_search = GridSearchCV(
+    pipeline, 
+    param_grid, 
+    cv=5, 
+    scoring='accuracy', 
+    n_jobs=-1
+)
+
 # ============================================
 # 6. TRAIN
 # ============================================
 
-model.fit(X_train, y_train)
+print("Starting Hyperparameter Tuning...")
+grid_search.fit(X_train, y_train)
+
+# Best parameter and best model
+print(f"Best C value found: {grid_search.best_params_['logreg__C']}")
+best_model = grid_search.best_estimator_
 
 # ============================================
 # 7. PREDICT + EVALUATE
