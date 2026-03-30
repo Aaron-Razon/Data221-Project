@@ -10,6 +10,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, \
     classification_report
 
@@ -72,8 +73,6 @@ preprocessor = ColumnTransformer([
     ("num", num_pipeline, num_features),
     ("cat", cat_pipeline, cat_features)
 ])
-
-from sklearn.model_selection import GridSearchCV
 
 # ============================================
 # 5. MODEL PIPELINE & HYPERPARAMETER TUNING
