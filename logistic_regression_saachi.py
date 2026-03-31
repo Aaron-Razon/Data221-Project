@@ -115,8 +115,8 @@ best_model = grid_search.best_estimator_
 # 7. PREDICT + EVALUATE
 # ============================================
 
-y_pred = model.predict(X_test)
-y_prob = model.predict_proba(X_test)[:, 1]
+y_pred = best_model.predict(X_test)
+y_prob = best_model.predict_proba(X_test)[:, 1]
 
 print("\n=== LOGISTIC REGRESSION RESULTS ===")
 print("Accuracy:", accuracy_score(y_test, y_pred))
