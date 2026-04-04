@@ -36,7 +36,7 @@ from sklearn.metrics import (
 pd.options.display.float_format = "{:.4f}".format
 
 print("=" * 60)
-print("AIRLINE PASSENGER SATISFACTION MODEL COMPARISON STARTING...")
+print("AIRLINE PASSENGER SATISFACTION MODEL COMPARISON")
 print("=" * 60)
 
 # ============================================
