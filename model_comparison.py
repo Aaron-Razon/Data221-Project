@@ -30,6 +30,16 @@ from sklearn.metrics import (
 )
 
 # ============================================
+# 0. PROGRAM START MESSAGE
+# ============================================
+
+pd.options.display.float_format = "{:.4f}".format
+
+print("=" * 60)
+print("AIRLINE PASSENGER SATISFACTION MODEL COMPARISON STARTING...")
+print("=" * 60)
+
+# ============================================
 # 1. LOAD THE DATA
 # ============================================
 
@@ -267,14 +277,14 @@ with open("classification_reports.txt", "w", encoding="utf-8") as report_file:
 results_dataframe = pd.DataFrame(all_model_results)
 results_dataframe = results_dataframe.sort_values(by="F1-score", ascending=False).reset_index(drop=True)
 
-results_dataframe.to_csv("model_comparison_results.csv", index=False)
-
 rounded_results_dataframe = results_dataframe.copy()
 rounded_results_dataframe["Accuracy"] = rounded_results_dataframe["Accuracy"].round(4)
 rounded_results_dataframe["Precision"] = rounded_results_dataframe["Precision"].round(4)
 rounded_results_dataframe["Recall"] = rounded_results_dataframe["Recall"].round(4)
 rounded_results_dataframe["F1-score"] = rounded_results_dataframe["F1-score"].round(4)
 rounded_results_dataframe["ROC-AUC"] = rounded_results_dataframe["ROC-AUC"].round(4)
+
+rounded_results_dataframe.to_csv("model_comparison_results.csv", index=False, float_format="%.4f")
 
 print("\nFINAL MODEL COMPARISON")
 print(rounded_results_dataframe.to_string(index=False))
@@ -315,14 +325,23 @@ logistic_coefficient_dataframe = logistic_coefficient_dataframe.sort_values(
     ascending=False
 )
 
+rounded_logistic_coefficient_dataframe = logistic_coefficient_dataframe.copy()
+
+rounded_logistic_coefficient_dataframe["Coefficient"] = (
+    rounded_logistic_coefficient_dataframe["Coefficient"].round(4))
+
+rounded_logistic_coefficient_dataframe["Absolute Coefficient"] = (
+    rounded_logistic_coefficient_dataframe["Absolute Coefficient"].round(4))
+
 print("\nTop 10 Logistic Regression Coefficients:")
 print(
-    logistic_coefficient_dataframe[["Feature", "Coefficient"]]
+    rounded_logistic_coefficient_dataframe[["Feature", "Coefficient"]]
     .head(10)
     .to_string(index=False)
 )
 
-logistic_coefficient_dataframe.to_csv("logistic_regression_coefficients.csv", index=False)
+rounded_logistic_coefficient_dataframe.to_csv(
+    "logistic_regression_coefficients.csv", index=False, float_format="%.4f")
 
 top_10_logistic_coefficient_dataframe = (
     logistic_coefficient_dataframe[["Feature", "Coefficient"]]
@@ -377,18 +396,22 @@ with PdfPages("feature_importance_charts.pdf") as feature_importance_pdf:
             .str.replace("_", " = ", regex=False)
         )
 
-        tree_feature_importance_dataframe["Importance"] = tree_feature_importance_dataframe["Importance"].round(4)
-
         tree_feature_importance_dataframe = tree_feature_importance_dataframe.sort_values(
             by="Importance",
             ascending=False
         )
 
+        rounded_tree_feature_importance_dataframe = tree_feature_importance_dataframe.copy()
+        rounded_tree_feature_importance_dataframe["Importance"] = (
+            rounded_tree_feature_importance_dataframe["Importance"].round(4)
+        )
+
         print(f"\nTop 10 Features for {model_name}:")
-        print(tree_feature_importance_dataframe.head(10).to_string(index=False))
+        print(rounded_tree_feature_importance_dataframe.head(10).to_string(index=False))
 
         output_file_name = model_name.lower().replace(" ", "_") + "_feature_importance.csv"
-        tree_feature_importance_dataframe.to_csv(output_file_name, index=False)
+
+        rounded_tree_feature_importance_dataframe.to_csv(output_file_name, index=False, float_format="%.4f")
 
         top_10_tree_feature_importance_dataframe = tree_feature_importance_dataframe.head(10).copy()
         top_10_tree_feature_importance_dataframe = top_10_tree_feature_importance_dataframe.sort_values(
