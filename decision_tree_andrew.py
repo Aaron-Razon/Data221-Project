@@ -199,7 +199,7 @@ importance_df = pd.DataFrame({
 print("\nTop 10 Features:")
 print(importance_df.head(10).to_string(index=False))
 
-top_n = 15  # show top 15 features
+top_n = 10  # show top 10 features
 
 plt.figure(figsize=(10, 6))
 plt.barh(
